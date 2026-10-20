@@ -31,7 +31,7 @@ export $(grep -v '^#' .env | xargs)
 go run .
 ```
 
-Buka `http://localhost:4000`.
+Buka `http://localhost:8746`.
 
 ## Cara kerja
 

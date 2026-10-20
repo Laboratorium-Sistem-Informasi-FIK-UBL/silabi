@@ -60,7 +60,7 @@ func (c *siteCache) set(content map[string]interface{}, err error) {
 func main() {
 	apiBase := getEnv("TANGKAS_API_URL", "https://api.tangkas.sta.my.id")
 	slug := getEnv("SITE_SLUG", "silabi")
-	port := getEnv("PORT", "4000")
+	port := getEnv("PORT", "8746")
 	ttl := 60 * time.Second
 	if v := os.Getenv("CACHE_TTL_SECONDS"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 {

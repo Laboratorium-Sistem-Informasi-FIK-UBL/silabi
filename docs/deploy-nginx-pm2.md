@@ -27,7 +27,7 @@ Isi minimal:
 ```
 TANGKAS_API_URL=https://api.tangkas.sta.my.id
 SITE_SLUG=silabi
-PORT=4000
+PORT=8746
 CACHE_TTL_SECONDS=60
 ```
 
@@ -65,7 +65,7 @@ module.exports = {
 > env: {
 >   TANGKAS_API_URL: "https://api.tangkas.sta.my.id",
 >   SITE_SLUG: "silabi",
->   PORT: "4000",
+>   PORT: "8746",
 >   CACHE_TTL_SECONDS: "60",
 > }
 > ```
@@ -104,7 +104,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/silabi.ubl.ac.id/privkey.pem;
 
     location / {
-        proxy_pass http://127.0.0.1:4000;
+        proxy_pass http://127.0.0.1:8746;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -127,7 +127,7 @@ sudo certbot --nginx -d silabi.ubl.ac.id
 
 ```bash
 pm2 status                              # pastikan silabi-web "online"
-curl -I http://127.0.0.1:4000           # langsung ke app, lewati Nginx
+curl -I http://127.0.0.1:8746           # langsung ke app, lewati Nginx
 curl -I https://silabi.ubl.ac.id        # lewat Nginx + SSL
 curl -s https://silabi.ubl.ac.id/health # -> "ok"
 ```
