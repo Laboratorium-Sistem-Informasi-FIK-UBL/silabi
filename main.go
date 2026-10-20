@@ -27,23 +27,24 @@ type envelope struct {
 }
 
 type publicSite struct {
-	Content map[string]interface{} `json:"content"`
+	Content         map[string]interface{} `json:"content"`
+	VisibleSections map[string]interface{} `json:"visible_sections"`
 }
 
 type siteCache struct {
 	mu        sync.RWMutex
-	content   map[string]interface{}
+	site      *publicSite
 	fetchedAt time.Time
 	lastErr   error
 }
 
-func (c *siteCache) get() (map[string]interface{}, error) {
+func (c *siteCache) get() (*publicSite, error) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	return c.content, c.lastErr
+	return c.site, c.lastErr
 }
 
-func (c *siteCache) set(content map[string]interface{}, err error) {
+func (c *siteCache) set(site *publicSite, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if err != nil {
@@ -52,7 +53,7 @@ func (c *siteCache) set(content map[string]interface{}, err error) {
 		c.lastErr = err
 		return
 	}
-	c.content = content
+	c.site = site
 	c.fetchedAt = time.Now()
 	c.lastErr = nil
 }
@@ -77,11 +78,11 @@ func main() {
 	cache := &siteCache{}
 
 	refresh := func() {
-		content, err := fetchSiteContent(client, apiBase, slug)
+		site, err := fetchSite(client, apiBase, slug)
 		if err != nil {
 			log.Printf("fetch site content failed: %v", err)
 		}
-		cache.set(content, err)
+		cache.set(site, err)
 	}
 
 	refresh() // warm the cache before accepting traffic
@@ -99,18 +100,19 @@ func main() {
 		w.Write([]byte("ok"))
 	})
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		content, fetchErr := cache.get()
-		if content == nil {
+		site, fetchErr := cache.get()
+		if site == nil {
 			log.Printf("no cached content available (last error: %v)", fetchErr)
 			http.Error(w, "Situs sedang tidak dapat diakses, silakan coba lagi sebentar lagi.", http.StatusServiceUnavailable)
 			return
 		}
 
-		data := make(map[string]interface{}, len(content)+1)
-		for k, v := range content {
+		data := make(map[string]interface{}, len(site.Content)+2)
+		for k, v := range site.Content {
 			data[k] = v
 		}
 		data["api_base_url"] = apiBase
+		data["visible_sections"] = site.VisibleSections
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		if err := tmpl.Execute(w, data); err != nil {
@@ -123,7 +125,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, mux))
 }
 
-func fetchSiteContent(client *http.Client, apiBase, slug string) (map[string]interface{}, error) {
+func fetchSite(client *http.Client, apiBase, slug string) (*publicSite, error) {
 	resp, err := client.Get(apiBase + "/api/public/site/" + slug)
 	if err != nil {
 		return nil, err
@@ -145,7 +147,7 @@ func fetchSiteContent(client *http.Client, apiBase, slug string) (map[string]int
 	if err := json.Unmarshal(env.Data, &site); err != nil {
 		return nil, err
 	}
-	return site.Content, nil
+	return &site, nil
 }
 
 func getEnv(key, fallback string) string {
