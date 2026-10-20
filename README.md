@@ -58,13 +58,10 @@ otomatis ambil versi terbaru di refresh cache berikutnya (maks.
 
 ## Deployment production
 
-Lihat panduan lengkap (DNS, systemd, Nginx, SSL) di
-`be/docs/custom-domain-silabi-ubl.md` pada repo backend Tangkas — server ini
-yang dimaksud sebagai "app repo baru" di panduan tersebut. Build binary:
+Lihat panduan lengkap (DNS, Nginx, SSL) di `be/docs/custom-domain-silabi-ubl.md`
+pada repo backend Tangkas — server ini yang dimaksud sebagai "app repo baru"
+di panduan tersebut.
 
-```bash
-go build -ldflags="-s -w" -o bin/silabi-web .
-```
-
-Jalankan sebagai systemd service, proxy lewat Nginx ke port yang dipakai
-(`PORT` di `.env`), seperti dijelaskan di panduan tersebut.
+Untuk menjalankan proses binary-nya, panduan lengkap Nginx + PM2 (build,
+`ecosystem.config.js`, operasional `pm2 restart`/`pm2 logs`, dst) ada di
+[`docs/deploy-nginx-pm2.md`](docs/deploy-nginx-pm2.md).
