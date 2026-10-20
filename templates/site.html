@@ -449,7 +449,7 @@
 
           fetch(apiBaseUrl + '/api/public/leads', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'X-Site-Slug': '{{.site_slug}}' },
             body: JSON.stringify(payload)
           })
             .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })

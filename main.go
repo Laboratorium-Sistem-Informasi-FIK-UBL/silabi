@@ -113,6 +113,10 @@ func main() {
 		}
 		data["api_base_url"] = apiBase
 		data["visible_sections"] = site.VisibleSections
+		// The contact form fetches cross-origin to the Tangkas API, so the
+		// server's own Host header (api-tangkas.sta.my.id) can't be used by
+		// TenantResolver to find the slug — send it explicitly instead.
+		data["site_slug"] = slug
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		if err := tmpl.Execute(w, data); err != nil {
