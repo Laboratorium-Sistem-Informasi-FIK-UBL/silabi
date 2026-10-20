@@ -25,7 +25,7 @@ nano .env
 
 Isi minimal:
 ```
-TANGKAS_API_URL=https://api.tangkas.sta.my.id
+TANGKAS_API_URL=https://api-tangkas.sta.my.id
 SITE_SLUG=silabi
 PORT=8746
 CACHE_TTL_SECONDS=60
@@ -63,7 +63,7 @@ module.exports = {
 > ecosystem file sebagai gantinya:
 > ```js
 > env: {
->   TANGKAS_API_URL: "https://api.tangkas.sta.my.id",
+>   TANGKAS_API_URL: "https://api-tangkas.sta.my.id",
 >   SITE_SLUG: "silabi",
 >   PORT: "8746",
 >   CACHE_TTL_SECONDS: "60",

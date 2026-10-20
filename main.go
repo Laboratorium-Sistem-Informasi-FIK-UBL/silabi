@@ -58,7 +58,7 @@ func (c *siteCache) set(content map[string]interface{}, err error) {
 }
 
 func main() {
-	apiBase := getEnv("TANGKAS_API_URL", "https://api.tangkas.sta.my.id")
+	apiBase := getEnv("TANGKAS_API_URL", "https://api-tangkas.sta.my.id")
 	slug := getEnv("SITE_SLUG", "silabi")
 	port := getEnv("PORT", "8746")
 	ttl := 60 * time.Second
