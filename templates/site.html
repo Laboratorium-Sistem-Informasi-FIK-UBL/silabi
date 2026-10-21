@@ -147,49 +147,49 @@
 <main class="pt-24">
 
   <!-- Hero -->
-  <section id="beranda" class="max-w-6xl mx-auto px-6 pt-10 pb-16 grid lg:grid-cols-2 gap-14 items-center">
-    <div class="fade-up">
+  <section id="beranda" class="max-w-6xl mx-auto px-6 pt-10 pb-16 {{if .seo.og_image_url}}grid lg:grid-cols-2 gap-14 items-center{{end}}">
+    <div class="fade-up {{if not .seo.og_image_url}}max-w-2xl{{end}}">
       <span class="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full icon-tile" style="color: var(--text-muted);">{{.company_name}}</span>
       <h1 class="mt-5 text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight" style="color: var(--text);">{{.hero.title}}</h1>
       <p class="mt-5 text-base leading-relaxed max-w-md" style="color: var(--text-muted);">{{.hero.subtitle}}</p>
-      <div class="mt-8 flex flex-wrap gap-3">
+      <div class="mt-8 flex flex-wrap items-center gap-3">
         <a href="#kontak" class="btn-primary font-semibold text-sm py-3 px-6 rounded-full transition-opacity">{{.hero.cta_primary}}</a>
         <a href="#tentang" class="btn-ghost font-semibold text-sm py-3 px-6 rounded-full transition-colors">{{.hero.cta_secondary}}</a>
+        {{if .stats.founded_year}}
+        <span class="inline-flex items-center gap-2 icon-tile rounded-full pl-2 pr-4 py-2">
+          <span class="rounded-full px-2 py-0.5 text-sm font-extrabold font-heading" style="background: var(--panel); color: #fff;">{{.stats.founded_year}}</span>
+          <span class="text-xs" style="color: var(--text-muted);">Tahun Berdiri</span>
+        </span>
+        {{end}}
       </div>
     </div>
 
-    <div class="relative fade-up delay-2">
-      {{if .seo.og_image_url}}
+    {{if .seo.og_image_url}}
+    <div class="fade-up delay-2">
       <div class="card rounded-3xl overflow-hidden shadow-sm aspect-[4/3]">
         <img src="{{.seo.og_image_url}}" alt="{{.company_name}}" class="w-full h-full object-cover">
       </div>
-      {{else}}
-      <div class="card rounded-3xl aspect-[4/3] flex items-center justify-center">
-        <span class="font-heading font-extrabold text-2xl" style="color: var(--text-muted);">{{.company_name}}</span>
-      </div>
-      {{end}}
-      {{if .stats.founded_year}}
-      <div class="card absolute -bottom-6 -left-6 rounded-2xl shadow-lg px-5 py-4 hidden sm:block">
-        <p class="text-2xl font-extrabold font-heading" style="color: var(--text);">{{.stats.founded_year}}</p>
-        <p class="text-xs mt-0.5" style="color: var(--text-muted);">Tahun Berdiri</p>
-      </div>
-      {{end}}
     </div>
+    {{end}}
   </section>
 
-  <!-- Banner: a contained card (not edge-to-edge) so it never collides with
-       the hero's floating stat badge above it, and keeps the same page
-       margins as every other section. -->
-  {{if or (not .visible_sections) (index .visible_sections "banner")}}
-  {{range .banner}}
-  {{if .image_url}}
+  <!-- Banner: one grouped block (not separate sections per image) with a
+       fixed cinematic aspect ratio per item, so one or several banners read
+       as a single intentional element instead of stacked random-height
+       photos — contained with the same page margins as every other section
+       so it never collides with anything above or below it. -->
+  {{if and (or (not .visible_sections) (index .visible_sections "banner")) .banner}}
   <section class="max-w-6xl mx-auto px-6 pt-10 sm:pt-14 pb-4">
-    <div class="card rounded-3xl overflow-hidden fade-up">
-      <img src="{{.image_url}}" alt="{{$.company_name}}" class="w-full max-h-[420px] object-cover">
+    <div class="space-y-4">
+      {{range .banner}}
+      {{if .image_url}}
+      <div class="card rounded-3xl overflow-hidden fade-up">
+        <img src="{{.image_url}}" alt="{{$.company_name}}" class="w-full aspect-[21/9] object-cover">
+      </div>
+      {{end}}
+      {{end}}
     </div>
   </section>
-  {{end}}
-  {{end}}
   {{end}}
 
   <!-- Klien & Mitra -->
@@ -265,24 +265,20 @@
   <!-- Tentang -->
   {{if or (not .visible_sections) (index .visible_sections "about")}}
   <section id="tentang" class="py-20 sm:py-24">
-    <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
-      <div class="fade-up order-2 lg:order-1">
+    <div class="max-w-6xl mx-auto px-6 {{if .about.image_url}}grid lg:grid-cols-2 gap-14 items-center{{end}}">
+      <div class="fade-up {{if not .about.image_url}}max-w-2xl{{end}}">
         <p class="text-xs font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Tentang Kami</p>
         <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold font-heading tracking-tight" style="color: var(--text);">Tentang Laboratorium</h2>
         <p class="mt-5 leading-relaxed" style="color: var(--text-muted);">{{.about.description}}</p>
         <p class="mt-4 leading-relaxed" style="color: var(--text-muted);">{{.about.vision}}</p>
       </div>
-      <div class="fade-up delay-1 order-1 lg:order-2">
-        {{if .about.image_url}}
+      {{if .about.image_url}}
+      <div class="fade-up delay-1">
         <div class="card rounded-3xl overflow-hidden aspect-[4/3]">
           <img src="{{.about.image_url}}" alt="{{.company_name}}" class="w-full h-full object-cover">
         </div>
-        {{else}}
-        <div class="card rounded-3xl aspect-[4/3] flex items-center justify-center">
-          <span class="font-heading font-extrabold text-xl" style="color: var(--text-muted);">{{.company_name}}</span>
-        </div>
-        {{end}}
       </div>
+      {{end}}
     </div>
   </section>
   {{end}}
