@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script>
   // Applied before paint to avoid a flash of the wrong theme. Priority:
   // explicit user choice (localStorage) > OS preference.
@@ -48,6 +49,8 @@
     --panel-2: #123850;
     --btn-bg: #0E2A3D;
     --btn-text: #FFFFFF;
+    --accent: #F2994A;
+    --accent-2: #2DBE8C;
   }
   .dark {
     --bg: #0A1A28;
@@ -60,6 +63,8 @@
     --panel-2: #163C54;
     --btn-bg: #E8EDF1;
     --btn-text: #0B1E2D;
+    --accent: #F2A65A;
+    --accent-2: #34D399;
   }
 
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
@@ -87,8 +92,8 @@
   .gallery-item:hover img { transform: scale(1.06); }
   .gallery-item .overlay { position: absolute; inset: 0; background: rgba(10,18,28,0.0); transition: background .3s ease; display: flex; align-items: center; justify-content: center; }
   .gallery-item:hover .overlay { background: rgba(10,18,28,0.45); }
-  .gallery-item .overlay svg { opacity: 0; transition: opacity .3s ease; }
-  .gallery-item:hover .overlay svg { opacity: 1; }
+  .gallery-item .overlay svg, .gallery-item .overlay-caption { opacity: 0; transition: opacity .3s ease; }
+  .gallery-item:hover .overlay svg, .gallery-item:hover .overlay-caption { opacity: 1; }
 
   .lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(6,12,20,0.92); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
   .lightbox.active { opacity: 1; pointer-events: all; }
@@ -102,6 +107,43 @@
   .theme-toggle .icon-sun { display: none; }
   .dark .theme-toggle .icon-moon { display: none; }
   .dark .theme-toggle .icon-sun { display: block; }
+
+  /* Hero band: always a deep panel, regardless of light/dark mode,
+     for a consistent "studio" focal point — with a soft radial glow
+     and a subtle grid texture behind the content. */
+  .hero-band {
+    background:
+      radial-gradient(60% 50% at 85% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+      radial-gradient(50% 60% at 10% 90%, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent 70%),
+      linear-gradient(160deg, var(--panel), var(--panel-2));
+  }
+  .hero-badge-dot { position: relative; display: inline-flex; width: .5rem; height: .5rem; border-radius: 9999px; background: var(--accent-2); }
+  .hero-badge-dot::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; background: var(--accent-2); animation: pulse-dot 2s ease-out infinite; }
+  @keyframes pulse-dot { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(2.4); opacity: 0; } }
+
+  /* Mockup card used in the hero when no hero image is set — a
+     data-driven stand-in built from the tenant's own services,
+     styled like a small product UI instead of an empty box. */
+  .mockup-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(6px); }
+  .mockup-dot { width: .55rem; height: .55rem; border-radius: 9999px; }
+  .mockup-row { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+  .mockup-row:hover { background: rgba(255,255,255,0.08); }
+
+  .service-icon-0 { background: color-mix(in srgb, #2563EB 18%, var(--surface-2)); color: #2563EB; }
+  .service-icon-1 { background: color-mix(in srgb, #7C3AED 18%, var(--surface-2)); color: #7C3AED; }
+  .service-icon-2 { background: color-mix(in srgb, #0D9488 18%, var(--surface-2)); color: #0D9488; }
+  .service-icon-3 { background: color-mix(in srgb, #E28B2A 18%, var(--surface-2)); color: #E28B2A; }
+  .service-icon-4 { background: color-mix(in srgb, #DB2777 18%, var(--surface-2)); color: #DB2777; }
+
+  .hover-lift { transition: transform .25s ease, box-shadow .25s ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 28px -12px rgba(10, 20, 35, 0.25); }
+
+  .team-photo-wrap { position: relative; overflow: hidden; }
+  .team-photo-wrap img { transition: transform .4s ease; }
+  .team-photo-wrap:hover img { transform: scale(1.06); }
+  .team-role-badge { position: absolute; left: .75rem; right: .75rem; bottom: .75rem; backdrop-filter: blur(6px); background: rgba(10,18,28,0.55); }
+
+  .tech-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); color: #DCE6EE; }
 </style>
 </head>
 
@@ -147,30 +189,65 @@
 <main class="pt-24">
 
   <!-- Hero -->
-  <section id="beranda" class="max-w-6xl mx-auto px-6 pt-10 pb-16 {{if .seo.og_image_url}}grid lg:grid-cols-2 gap-14 items-center{{end}}">
-    <div class="fade-up {{if not .seo.og_image_url}}max-w-2xl{{end}}">
-      <span class="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full icon-tile" style="color: var(--text-muted);">{{.company_name}}</span>
-      <h1 class="mt-5 text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight" style="color: var(--text);">{{.hero.title}}</h1>
-      <p class="mt-5 text-base leading-relaxed max-w-md" style="color: var(--text-muted);">{{.hero.subtitle}}</p>
-      <div class="mt-8 flex flex-wrap items-center gap-3">
-        <a href="#kontak" class="btn-primary font-semibold text-sm py-3 px-6 rounded-full transition-opacity">{{.hero.cta_primary}}</a>
-        <a href="#tentang" class="btn-ghost font-semibold text-sm py-3 px-6 rounded-full transition-colors">{{.hero.cta_secondary}}</a>
-        {{if .stats.founded_year}}
-        <span class="inline-flex items-center gap-2 icon-tile rounded-full pl-2 pr-4 py-2">
-          <span class="rounded-full px-2 py-0.5 text-sm font-extrabold font-heading" style="background: var(--panel); color: #fff;">{{.stats.founded_year}}</span>
-          <span class="text-xs" style="color: var(--text-muted);">Tahun Berdiri</span>
+  <section id="beranda" class="hero-band relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 pt-14 pb-20 relative grid lg:grid-cols-2 gap-14 items-center">
+      <div class="fade-up min-w-0">
+        <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full" style="background: rgba(255,255,255,0.08); color: #DCE6EE;">
+          <span class="hero-badge-dot"></span>{{.company_name}}
         </span>
+        <h1 class="mt-5 text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight text-white">{{.hero.title}}</h1>
+        <p class="mt-5 text-base leading-relaxed max-w-md" style="color: #B9C8D4;">{{.hero.subtitle}}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="#kontak" class="font-semibold text-sm py-3 px-6 rounded-full transition-opacity hover:opacity-90" style="background: var(--accent); color: #1A1200;">{{.hero.cta_primary}} <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></a>
+          <a href="#tentang" class="font-semibold text-sm py-3 px-6 rounded-full transition-colors" style="border: 1px solid rgba(255,255,255,0.25); color: #fff;">{{.hero.cta_secondary}}</a>
+        </div>
+        {{if or .stats.founded_year .stats.total_projects .stats.total_clients}}
+        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          {{if .stats.founded_year}}
+          <div><p class="text-2xl font-extrabold font-heading text-white">{{.stats.founded_year}}</p><p class="text-xs mt-0.5" style="color: #9FB3C4;">Tahun Berdiri</p></div>
+          {{end}}
+          {{if .stats.total_projects}}
+          <div class="pl-8 border-l stat-divider"><p class="text-2xl font-extrabold font-heading text-white">{{.stats.total_projects}}</p><p class="text-xs mt-0.5" style="color: #9FB3C4;">Total Proyek</p></div>
+          {{end}}
+          {{if .stats.total_clients}}
+          <div class="pl-8 border-l stat-divider"><p class="text-2xl font-extrabold font-heading text-white">{{.stats.total_clients}}</p><p class="text-xs mt-0.5" style="color: #9FB3C4;">Total Klien</p></div>
+          {{end}}
+        </div>
+        {{end}}
+      </div>
+
+      <div class="fade-up delay-2 min-w-0">
+        {{if .seo.og_image_url}}
+        <div class="rounded-3xl overflow-hidden shadow-xl aspect-[4/3]" style="border: 1px solid rgba(255,255,255,0.12);">
+          <img src="{{.seo.og_image_url}}" alt="{{.company_name}}" class="w-full h-full object-cover">
+        </div>
+        {{else if .services}}
+        <div class="mockup-card rounded-3xl p-6 shadow-xl">
+          <div class="flex items-center gap-1.5 mb-5">
+            <span class="mockup-dot" style="background:#F87171;"></span>
+            <span class="mockup-dot" style="background:#FBBF24;"></span>
+            <span class="mockup-dot" style="background:#34D399;"></span>
+            <span class="ml-3 text-xs" style="color: #8FA0B0;">{{.company_name}}</span>
+          </div>
+          <div class="space-y-3">
+            {{range $i, $s := .services}}
+            {{if lt $i 3}}
+            <div class="mockup-row rounded-xl p-4 flex items-center gap-3 transition-colors">
+              <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 service-icon-{{$i}}">
+                <i class="fa-solid {{if eq $i 0}}fa-flask{{else if eq $i 1}}fa-code{{else}}fa-rocket{{end}} text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-white truncate">{{$s.name}}</p>
+                <p class="text-xs truncate" style="color: #8FA0B0;">{{$s.description}}</p>
+              </div>
+            </div>
+            {{end}}
+            {{end}}
+          </div>
+        </div>
         {{end}}
       </div>
     </div>
-
-    {{if .seo.og_image_url}}
-    <div class="fade-up delay-2">
-      <div class="card rounded-3xl overflow-hidden shadow-sm aspect-[4/3]">
-        <img src="{{.seo.og_image_url}}" alt="{{.company_name}}" class="w-full h-full object-cover">
-      </div>
-    </div>
-    {{end}}
   </section>
 
   <!-- Banner: one grouped block (not separate sections per image) with a
@@ -295,26 +372,17 @@
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {{range $i, $s := .services}}
         {{if $s.link_url}}
-        <a href="{{$s.link_url}}" target="_blank" rel="noopener noreferrer" class="card block rounded-2xl p-7 fade-up {{if gt $i 0}}delay-{{if lt $i 4}}{{$i}}{{else}}4{{end}}{{end}}">
+        <a href="{{$s.link_url}}" target="_blank" rel="noopener noreferrer" class="card hover-lift block rounded-2xl p-7 fade-up {{if gt $i 0}}delay-{{if lt $i 4}}{{$i}}{{else}}4{{end}}{{end}}">
         {{else}}
-        <div class="card rounded-2xl p-7 fade-up {{if gt $i 0}}delay-{{if lt $i 4}}{{$i}}{{else}}4{{end}}{{end}}">
+        <div class="card hover-lift rounded-2xl p-7 fade-up {{if gt $i 0}}delay-{{if lt $i 4}}{{$i}}{{else}}4{{end}}{{end}}">
         {{end}}
-          <div class="icon-tile w-11 h-11 rounded-xl flex items-center justify-center mb-5">
-            {{if eq $i 0}}
-            <svg class="w-5 h-5" style="color: var(--text);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            {{else if eq $i 1}}
-            <svg class="w-5 h-5" style="color: var(--text);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            {{else if eq $i 2}}
-            <svg class="w-5 h-5" style="color: var(--text);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
-            {{else if eq $i 3}}
-            <svg class="w-5 h-5" style="color: var(--text);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            {{else}}
-            <svg class="w-5 h-5" style="color: var(--text);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-            {{end}}
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5 {{if eq $i 0}}service-icon-0{{else if eq $i 1}}service-icon-1{{else if eq $i 2}}service-icon-2{{else if eq $i 3}}service-icon-3{{else}}service-icon-4{{end}}">
+            <i class="fa-solid {{if eq $i 0}}fa-flask{{else if eq $i 1}}fa-code{{else if eq $i 2}}fa-gears{{else if eq $i 3}}fa-rocket{{else}}fa-chart-line{{end}}"></i>
           </div>
           <h3 class="font-heading font-bold text-base" style="color: var(--text);">{{.name}}</h3>
           <p class="text-sm mt-2 leading-relaxed" style="color: var(--text-muted);">{{.description}}</p>
         {{if $s.link_url}}
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold mt-4" style="color: var(--text);">Kunjungi <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></span>
         </a>
         {{else}}
         </div>
@@ -335,16 +403,21 @@
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {{range .portfolio}}
-        <div class="card rounded-2xl overflow-hidden fade-up flex flex-col">
+        <div class="card hover-lift rounded-2xl overflow-hidden fade-up flex flex-col">
           {{if .image_url}}
           <img src="{{.image_url}}" class="w-full h-40 object-cover">
           {{else}}
-          <div class="w-full h-40 icon-tile"></div>
+          <div class="w-full h-40 icon-tile flex items-center justify-center">
+            <i class="fa-solid fa-diagram-project text-2xl" style="color: var(--text-muted);"></i>
+          </div>
           {{end}}
           <div class="p-6 flex-1 flex flex-col">
             <h3 class="font-heading font-bold text-base" style="color: var(--text);">{{.name}}</h3>
             {{if or .client .year}}
             <p class="text-xs mt-1" style="color: var(--text-muted);">{{.client}} &middot; {{.year}}</p>
+            {{end}}
+            {{if .tech}}
+            <span class="inline-block mt-3 text-[11px] font-semibold px-2.5 py-1 rounded-full w-fit icon-tile" style="color: var(--text-muted);">{{.tech}}</span>
             {{end}}
             {{if .challenge}}
             <p class="text-sm mt-3 leading-relaxed" style="color: var(--text-muted);"><span class="font-semibold" style="color: var(--text);">Tantangan.</span> {{.challenge}}</p>
@@ -374,17 +447,27 @@
       </div>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {{range .team}}
-        <div class="card rounded-2xl p-6 text-center fade-up">
-          {{if .photo_url}}
-          <img src="{{.photo_url}}" alt="{{.name}}" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover">
-          {{else}}
-          <div class="w-20 h-20 rounded-full mx-auto mb-4 icon-tile"></div>
-          {{end}}
-          <h3 class="font-heading font-bold text-sm" style="color: var(--text);">{{.name}}</h3>
-          <p class="text-xs font-medium mt-1" style="color: var(--text-muted);">{{.role}}</p>
-          {{if .bio}}
-          <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">{{.bio}}</p>
-          {{end}}
+        <div class="card hover-lift rounded-2xl overflow-hidden fade-up">
+          <div class="team-photo-wrap aspect-[3/4]">
+            {{if .photo_url}}
+            <img src="{{.photo_url}}" alt="{{.name}}" class="w-full h-full object-cover">
+            {{else}}
+            <div class="w-full h-full icon-tile flex items-center justify-center">
+              <i class="fa-solid fa-user text-3xl" style="color: var(--text-muted);"></i>
+            </div>
+            {{end}}
+            {{if .role}}
+            <div class="team-role-badge absolute rounded-lg px-3 py-1.5">
+              <p class="text-white text-xs font-semibold truncate">{{.role}}</p>
+            </div>
+            {{end}}
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-heading font-bold text-sm" style="color: var(--text);">{{.name}}</h3>
+            {{if .bio}}
+            <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">{{.bio}}</p>
+            {{end}}
+          </div>
         </div>
         {{end}}
       </div>
@@ -406,8 +489,9 @@
         {{if .image_url}}
         <div class="gallery-item card fade-up" onclick="openLightbox(this)">
           <img src="{{.image_url}}" alt="{{.caption}}" class="w-full h-56 object-cover">
-          <div class="overlay">
+          <div class="overlay flex-col gap-2 px-4 text-center">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            {{if .caption}}<p class="text-white text-xs font-medium overlay-caption">{{.caption}}</p>{{end}}
           </div>
         </div>
         {{end}}
