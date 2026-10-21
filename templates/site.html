@@ -115,6 +115,7 @@
       <a href="#beranda" class="nav-link">Beranda</a>
       <a href="#tentang" class="nav-link">Tentang</a>
       <a href="#riset" class="nav-link">Fokus Riset</a>
+      <a href="#portofolio" class="nav-link">Portofolio</a>
       <a href="#tim" class="nav-link">Tim</a>
       <a href="#galeri" class="nav-link">Galeri</a>
     </nav>
@@ -136,6 +137,7 @@
     <a href="#beranda" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Beranda</a>
     <a href="#tentang" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tentang</a>
     <a href="#riset" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Fokus Riset</a>
+    <a href="#portofolio" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Portofolio</a>
     <a href="#tim" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tim</a>
     <a href="#galeri" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Galeri</a>
     <a href="#kontak" class="block py-3 px-6 text-sm font-semibold" style="color: var(--text);">Hubungi Kami</a>
@@ -321,6 +323,44 @@
         {{else}}
         </div>
         {{end}}
+        {{end}}
+      </div>
+    </div>
+  </section>
+  {{end}}
+
+  <!-- Portofolio -->
+  {{if and (or (not .visible_sections) (index .visible_sections "portfolio")) .portfolio}}
+  <section id="portofolio" class="section-alt py-20 sm:py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-xl mb-14 fade-up">
+        <p class="text-xs font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Portofolio</p>
+        <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold font-heading tracking-tight" style="color: var(--text);">Proyek Terpilih</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{range .portfolio}}
+        <div class="card rounded-2xl overflow-hidden fade-up flex flex-col">
+          {{if .image_url}}
+          <img src="{{.image_url}}" class="w-full h-40 object-cover">
+          {{else}}
+          <div class="w-full h-40 icon-tile"></div>
+          {{end}}
+          <div class="p-6 flex-1 flex flex-col">
+            <h3 class="font-heading font-bold text-base" style="color: var(--text);">{{.name}}</h3>
+            {{if or .client .year}}
+            <p class="text-xs mt-1" style="color: var(--text-muted);">{{.client}} &middot; {{.year}}</p>
+            {{end}}
+            {{if .challenge}}
+            <p class="text-sm mt-3 leading-relaxed" style="color: var(--text-muted);"><span class="font-semibold" style="color: var(--text);">Tantangan.</span> {{.challenge}}</p>
+            {{end}}
+            {{if .solution}}
+            <p class="text-sm mt-2 leading-relaxed" style="color: var(--text-muted);"><span class="font-semibold" style="color: var(--text);">Solusi.</span> {{.solution}}</p>
+            {{end}}
+            {{if .result}}
+            <p class="text-sm font-semibold mt-3" style="color: var(--text);">{{.result}}</p>
+            {{end}}
+          </div>
+        </div>
         {{end}}
       </div>
     </div>
