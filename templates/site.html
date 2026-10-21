@@ -169,18 +169,43 @@
       {{if .stats.founded_year}}
       <div class="card absolute -bottom-6 -left-6 rounded-2xl shadow-lg px-5 py-4 hidden sm:block">
         <p class="text-2xl font-extrabold font-heading" style="color: var(--text);">{{.stats.founded_year}}</p>
-        <p class="text-xs mt-0.5" style="color: var(--text-muted);">Fokus Riset Aktif</p>
+        <p class="text-xs mt-0.5" style="color: var(--text-muted);">Tahun Berdiri</p>
       </div>
       {{end}}
     </div>
   </section>
 
+  <!-- Banner: a contained card (not edge-to-edge) so it never collides with
+       the hero's floating stat badge above it, and keeps the same page
+       margins as every other section. -->
   {{if index .visible_sections "banner"}}
   {{if .banner.image_url}}
-  <section style="border-bottom: 1px solid var(--border);">
-    <img src="{{.banner.image_url}}" alt="{{.company_name}}" class="w-full max-h-[480px] object-cover">
+  <section class="max-w-6xl mx-auto px-6 pt-10 sm:pt-14 pb-4">
+    <div class="card rounded-3xl overflow-hidden fade-up">
+      <img src="{{.banner.image_url}}" alt="{{.company_name}}" class="w-full max-h-[420px] object-cover">
+    </div>
   </section>
   {{end}}
+  {{end}}
+
+  <!-- Klien & Mitra -->
+  {{if and (index .visible_sections "clients_partners") .clients_partners}}
+  <section class="py-14">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest mb-8" style="color: var(--text-muted);">Dipercaya Oleh</p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        {{range .clients_partners}}
+        {{if .logo_url}}
+        <div class="icon-tile h-14 px-6 rounded-full flex items-center justify-center">
+          <img src="{{.logo_url}}" alt="{{.name}}" class="h-7 object-contain">
+        </div>
+        {{else}}
+        <span class="icon-tile rounded-full px-5 py-2.5 text-sm font-medium" style="color: var(--text-muted);">{{.name}}</span>
+        {{end}}
+        {{end}}
+      </div>
+    </div>
+  </section>
   {{end}}
 
   <!-- Why us -->
@@ -214,19 +239,19 @@
       <div class="grid grid-cols-2 md:grid-cols-4">
         <div class="text-center px-4 fade-up">
           <p class="text-3xl sm:text-4xl font-extrabold font-heading text-white">{{.stats.founded_year}}</p>
-          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Fokus Riset</p>
+          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Tahun Berdiri</p>
         </div>
         <div class="text-center px-4 border-l stat-divider fade-up delay-1">
           <p class="text-3xl sm:text-4xl font-extrabold font-heading text-white">{{.stats.total_projects}}</p>
-          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Tim Dosen Ahli</p>
+          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Total Proyek</p>
         </div>
         <div class="text-center px-4 border-l stat-divider fade-up delay-2">
           <p class="text-3xl sm:text-4xl font-extrabold font-heading text-white">{{.stats.total_clients}}</p>
-          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Fakultas Ilmu Komputer</p>
+          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Total Klien</p>
         </div>
         <div class="text-center px-4 border-l stat-divider fade-up delay-3">
           <p class="text-3xl sm:text-4xl font-extrabold font-heading text-white">{{.stats.coverage_area}}</p>
-          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Universitas Bandar Lampung</p>
+          <p class="text-sm mt-1.5" style="color: #9FB3C4;">Cakupan Area</p>
         </div>
       </div>
     </div>
@@ -365,6 +390,90 @@
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 5l7 7-7 7"/></svg>
     </button>
   </div>
+  {{end}}
+
+  <!-- Testimoni -->
+  {{if and (index .visible_sections "testimonials") .testimonials}}
+  <section class="py-20 sm:py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-xl mb-14 fade-up">
+        <p class="text-xs font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Testimoni</p>
+        <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold font-heading tracking-tight" style="color: var(--text);">Apa Kata Mereka</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        {{range .testimonials}}
+        <div class="card rounded-2xl p-7 fade-up">
+          <svg class="w-7 h-7 mb-4" style="color: var(--border);" fill="currentColor" viewBox="0 0 24 24"><path d="M7.17 6A5.17 5.17 0 002 11.17V18h6.83v-6.83H4.5a2.67 2.67 0 012.67-2.67V6zm10 0A5.17 5.17 0 0012 11.17V18h6.83v-6.83H14.5a2.67 2.67 0 012.67-2.67V6z"/></svg>
+          <p class="leading-relaxed mb-5" style="color: var(--text);">&ldquo;{{.message}}&rdquo;</p>
+          <p class="font-heading font-bold text-sm" style="color: var(--text);">{{.name}}</p>
+          <p class="text-xs mt-0.5" style="color: var(--text-muted);">{{.position}}</p>
+        </div>
+        {{end}}
+      </div>
+    </div>
+  </section>
+  {{end}}
+
+  <!-- Artikel -->
+  {{if and (index .visible_sections "articles") .articles}}
+  <section class="section-alt py-20 sm:py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-xl mb-14 fade-up">
+        <p class="text-xs font-semibold uppercase tracking-widest" style="color: var(--text-muted);">Wawasan</p>
+        <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold font-heading tracking-tight" style="color: var(--text);">Artikel Terbaru</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{range .articles}}
+        <a href="/artikel/{{.slug}}" class="card block rounded-2xl overflow-hidden fade-up">
+          {{if .cover_image_url}}
+          <img src="{{.cover_image_url}}" class="w-full h-40 object-cover">
+          {{else}}
+          <div class="w-full h-40 icon-tile"></div>
+          {{end}}
+          <div class="p-6">
+            <h3 class="font-heading font-bold text-base" style="color: var(--text);">{{.title}}</h3>
+            <p class="text-sm mt-2 leading-relaxed" style="color: var(--text-muted);">{{.excerpt}}</p>
+            <p class="text-xs mt-4" style="color: var(--text-muted);">{{.author}} &middot; {{.published_at}}</p>
+          </div>
+        </a>
+        {{end}}
+      </div>
+    </div>
+  </section>
+  {{end}}
+
+  <!-- FAQ -->
+  {{if and (index .visible_sections "faq") .faq}}
+  <section class="py-20 sm:py-24">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="mb-12 fade-up">
+        <p class="text-xs font-semibold uppercase tracking-widest" style="color: var(--text-muted);">FAQ</p>
+        <h2 class="mt-3 text-2xl sm:text-3xl font-extrabold font-heading tracking-tight" style="color: var(--text);">Pertanyaan Umum</h2>
+      </div>
+      <div class="card rounded-2xl fade-up">
+        {{range $i, $f := .faq}}
+        <details class="group p-6" style="{{if gt $i 0}}border-top: 1px solid var(--border);{{end}}">
+          <summary class="flex items-center justify-between font-semibold cursor-pointer list-none" style="color: var(--text);">
+            {{.question}}
+            <span class="ml-4 group-open:rotate-45 transition" style="color: var(--text-muted);">+</span>
+          </summary>
+          <p class="mt-3 leading-relaxed" style="color: var(--text-muted);">{{.answer}}</p>
+        </details>
+        {{end}}
+      </div>
+    </div>
+  </section>
+  {{end}}
+
+  <!-- CTA -->
+  {{if index .visible_sections "cta"}}
+  <section class="py-20" style="background: var(--panel);">
+    <div class="max-w-3xl mx-auto px-6 text-center fade-up">
+      <h2 class="text-2xl sm:text-3xl font-extrabold font-heading tracking-tight text-white">{{.cta.title}}</h2>
+      <p class="mt-4 leading-relaxed" style="color: #B9C8D4;">{{.cta.subtitle}}</p>
+      <a href="#kontak" class="mt-8 inline-block font-semibold text-sm py-3 px-7 rounded-full transition-opacity" style="background: #FFFFFF; color: var(--panel);">{{.cta.button_text}}</a>
+    </div>
+  </section>
   {{end}}
 
   <!-- Kontak -->
