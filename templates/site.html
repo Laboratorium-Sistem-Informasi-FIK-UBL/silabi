@@ -113,11 +113,11 @@
 
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="#beranda" class="nav-link">Beranda</a>
-      <a href="#tentang" class="nav-link">Tentang</a>
-      <a href="#riset" class="nav-link">Fokus Riset</a>
-      <a href="#portofolio" class="nav-link">Portofolio</a>
-      <a href="#tim" class="nav-link">Tim</a>
-      <a href="#galeri" class="nav-link">Galeri</a>
+      {{if or (not .visible_sections) (index .visible_sections "about")}}<a href="#tentang" class="nav-link">Tentang</a>{{end}}
+      {{if or (not .visible_sections) (index .visible_sections "services")}}<a href="#riset" class="nav-link">Fokus Riset</a>{{end}}
+      {{if or (not .visible_sections) (index .visible_sections "portfolio")}}<a href="#portofolio" class="nav-link">Portofolio</a>{{end}}
+      {{if or (not .visible_sections) (index .visible_sections "team")}}<a href="#tim" class="nav-link">Tim</a>{{end}}
+      {{if or (not .visible_sections) (index .visible_sections "gallery")}}<a href="#galeri" class="nav-link">Galeri</a>{{end}}
     </nav>
 
     <div class="flex items-center gap-2">
@@ -135,11 +135,11 @@
 
   <div id="mobile-menu" class="hidden md:hidden border-t" style="border-color: var(--border); background: var(--bg);">
     <a href="#beranda" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Beranda</a>
-    <a href="#tentang" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tentang</a>
-    <a href="#riset" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Fokus Riset</a>
-    <a href="#portofolio" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Portofolio</a>
-    <a href="#tim" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tim</a>
-    <a href="#galeri" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Galeri</a>
+    {{if or (not .visible_sections) (index .visible_sections "about")}}<a href="#tentang" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tentang</a>{{end}}
+    {{if or (not .visible_sections) (index .visible_sections "services")}}<a href="#riset" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Fokus Riset</a>{{end}}
+    {{if or (not .visible_sections) (index .visible_sections "portfolio")}}<a href="#portofolio" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Portofolio</a>{{end}}
+    {{if or (not .visible_sections) (index .visible_sections "team")}}<a href="#tim" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Tim</a>{{end}}
+    {{if or (not .visible_sections) (index .visible_sections "gallery")}}<a href="#galeri" class="block py-3 px-6 text-sm font-medium" style="color: var(--text-muted);">Galeri</a>{{end}}
     <a href="#kontak" class="block py-3 px-6 text-sm font-semibold" style="color: var(--text);">Hubungi Kami</a>
   </div>
 </header>
@@ -635,8 +635,8 @@
     <p class="text-xs" style="color: var(--text-muted);">&copy; {{.footer.year}} {{.company_name}}. Seluruh hak cipta dilindungi.</p>
     <div class="flex gap-5 text-xs font-medium">
       <a href="#beranda" class="nav-link">Beranda</a>
-      <a href="#tentang" class="nav-link">Tentang</a>
-      <a href="#galeri" class="nav-link">Galeri</a>
+      {{if or (not .visible_sections) (index .visible_sections "about")}}<a href="#tentang" class="nav-link">Tentang</a>{{end}}
+      {{if or (not .visible_sections) (index .visible_sections "gallery")}}<a href="#galeri" class="nav-link">Galeri</a>{{end}}
     </div>
   </div>
 </footer>
