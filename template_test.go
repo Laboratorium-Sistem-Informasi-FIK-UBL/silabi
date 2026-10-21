@@ -79,3 +79,23 @@ func TestParseAndRenderTemplate(t *testing.T) {
 		t.Fatalf("rendered output is empty")
 	}
 }
+
+// TestRenderMinimalData guards the defensive `{{if or (not .visible_sections) ...}}`
+// checks throughout the template: visible_sections must default to "show
+// everything" not just when present-but-empty, but also when the key is
+// missing from the data entirely (e.g. an older cached API response).
+func TestRenderMinimalData(t *testing.T) {
+	tmpl, err := template.ParseFiles("templates/site.html")
+	if err != nil {
+		t.Fatalf("failed to parse templates/site.html: %v", err)
+	}
+
+	data := map[string]interface{}{
+		"company_name": "SILABI",
+	}
+
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		t.Fatalf("failed to execute template with minimal data: %v", err)
+	}
+}

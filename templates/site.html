@@ -178,18 +178,20 @@
   <!-- Banner: a contained card (not edge-to-edge) so it never collides with
        the hero's floating stat badge above it, and keeps the same page
        margins as every other section. -->
-  {{if index .visible_sections "banner"}}
-  {{if .banner.image_url}}
+  {{if or (not .visible_sections) (index .visible_sections "banner")}}
+  {{range .banner}}
+  {{if .image_url}}
   <section class="max-w-6xl mx-auto px-6 pt-10 sm:pt-14 pb-4">
     <div class="card rounded-3xl overflow-hidden fade-up">
-      <img src="{{.banner.image_url}}" alt="{{.company_name}}" class="w-full max-h-[420px] object-cover">
+      <img src="{{.image_url}}" alt="{{$.company_name}}" class="w-full max-h-[420px] object-cover">
     </div>
   </section>
   {{end}}
   {{end}}
+  {{end}}
 
   <!-- Klien & Mitra -->
-  {{if and (index .visible_sections "clients_partners") .clients_partners}}
+  {{if and (or (not .visible_sections) (index .visible_sections "clients_partners")) .clients_partners}}
   <section class="py-14">
     <div class="max-w-6xl mx-auto px-6">
       <p class="text-center text-xs font-semibold uppercase tracking-widest mb-8" style="color: var(--text-muted);">Dipercaya Oleh</p>
@@ -209,7 +211,7 @@
   {{end}}
 
   <!-- Why us -->
-  {{if and (index .visible_sections "why_us") .why_us}}
+  {{if and (or (not .visible_sections) (index .visible_sections "why_us")) .why_us}}
   <section class="max-w-6xl mx-auto px-6 pb-20">
     <div class="card rounded-3xl p-8 sm:p-10 grid sm:grid-cols-3 gap-8 fade-up">
       {{range $i, $w := .why_us}}
@@ -232,7 +234,7 @@
   {{end}}
 
   <!-- Stats -->
-  {{if index .visible_sections "stats"}}
+  {{if or (not .visible_sections) (index .visible_sections "stats")}}
   <section class="py-16" style="background: var(--panel);">
     <div class="max-w-6xl mx-auto px-6">
       <p class="text-xs font-semibold uppercase tracking-widest text-center mb-10" style="color: #9FB3C4;">Sekilas Angka</p>
@@ -259,7 +261,7 @@
   {{end}}
 
   <!-- Tentang -->
-  {{if index .visible_sections "about"}}
+  {{if or (not .visible_sections) (index .visible_sections "about")}}
   <section id="tentang" class="py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
       <div class="fade-up order-2 lg:order-1">
@@ -284,7 +286,7 @@
   {{end}}
 
   <!-- Fokus Riset -->
-  {{if index .visible_sections "services"}}
+  {{if or (not .visible_sections) (index .visible_sections "services")}}
   <section id="riset" class="section-alt py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
@@ -326,7 +328,7 @@
   {{end}}
 
   <!-- Tim -->
-  {{if index .visible_sections "team"}}
+  {{if or (not .visible_sections) (index .visible_sections "team")}}
   <section id="tim" class="py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
@@ -355,7 +357,7 @@
   {{end}}
 
   <!-- Galeri -->
-  {{if index .visible_sections "gallery"}}
+  {{if or (not .visible_sections) (index .visible_sections "gallery")}}
   <section id="galeri" class="section-alt py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
@@ -393,7 +395,7 @@
   {{end}}
 
   <!-- Testimoni -->
-  {{if and (index .visible_sections "testimonials") .testimonials}}
+  {{if and (or (not .visible_sections) (index .visible_sections "testimonials")) .testimonials}}
   <section class="py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
@@ -415,7 +417,7 @@
   {{end}}
 
   <!-- Artikel -->
-  {{if and (index .visible_sections "articles") .articles}}
+  {{if and (or (not .visible_sections) (index .visible_sections "articles")) .articles}}
   <section class="section-alt py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
@@ -443,7 +445,7 @@
   {{end}}
 
   <!-- FAQ -->
-  {{if and (index .visible_sections "faq") .faq}}
+  {{if and (or (not .visible_sections) (index .visible_sections "faq")) .faq}}
   <section class="py-20 sm:py-24">
     <div class="max-w-3xl mx-auto px-6">
       <div class="mb-12 fade-up">
@@ -466,7 +468,7 @@
   {{end}}
 
   <!-- CTA -->
-  {{if index .visible_sections "cta"}}
+  {{if or (not .visible_sections) (index .visible_sections "cta")}}
   <section class="py-20" style="background: var(--panel);">
     <div class="max-w-3xl mx-auto px-6 text-center fade-up">
       <h2 class="text-2xl sm:text-3xl font-extrabold font-heading tracking-tight text-white">{{.cta.title}}</h2>
@@ -477,7 +479,7 @@
   {{end}}
 
   <!-- Kontak -->
-  {{if index .visible_sections "contact"}}
+  {{if or (not .visible_sections) (index .visible_sections "contact")}}
   <section id="kontak" class="py-20 sm:py-24">
     <div class="max-w-6xl mx-auto px-6">
       <div class="max-w-xl mb-14 fade-up">
